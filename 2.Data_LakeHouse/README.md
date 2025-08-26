@@ -26,10 +26,6 @@ It is designed to handle **structured, semi-structured, and unstructured data** 
 ---
 
 ## 🖼️ Data Lakehouse Design
-
-```
-
-```
                     👥 Users & Consumers
 ```
 
@@ -52,10 +48,7 @@ It is designed to handle **structured, semi-structured, and unstructured data** 
 ──────────────────────────────────────────────────────
 | 📦 AWS S3 | 🗂️ Azure ADLS | 🛢️ GCP Cloud Storage |
 ──────────────────────────────────────────────────────
-
 ```
-
----
 
 ## 🔑 Key Features of a Data Lakehouse
 - **🗂️ Single Source of Truth** → Store all types of data in one place.  
