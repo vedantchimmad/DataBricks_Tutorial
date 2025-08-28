@@ -125,3 +125,18 @@ It provides access to all **Databricks resources** like **notebooks, clusters, j
 7. 🤖 **Train ML models** with MLflow in notebooks.
 
 ---
+## 🔑 Language-Specific Magic Commands
+| Magic Command | Purpose                 | Example                       |
+| ------------- | ----------------------- | ----------------------------- |
+| `%python`     | Run Python code         | `%python print("Hello")`      |
+| `%sql`        | Run SQL queries         | `%sql SELECT * FROM table`    |
+| `%scala`      | Run Scala code          | `%scala println("Hi")`        |
+| `%r`          | Run R code              | `%r mean(c(1,2,3))`           |
+| `%sh`         | Run shell commands      | `%sh ls -lh`                  |
+| `%fs`         | Access DBFS             | `%fs ls /mnt/data`            |
+| `%md`         | Write Markdown          | `%md # Title`                 |
+| `%run`        | Import another notebook | `%run /Shared/Notebook`       |
+| `%pip`        | Install pip packages    | `%pip install requests`       |
+| `%conda`      | Manage conda env        | `%conda install numpy`        |
+| `%matplotlib` | Inline plotting         | `%matplotlib inline`          |
+| `%sqlcmd`     | SQL command mode        | `%sqlcmd SELECT * FROM table` |
