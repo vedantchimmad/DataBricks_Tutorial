@@ -14,20 +14,25 @@ It is designed to handle **structured, semi-structured, and unstructured data** 
 
 ## ⚖️ Difference Between Data Lake, Data Warehouse & Data Lakehouse
 
-| Feature               | 🏗️ Data Lake           | 🏢 Data Warehouse    | 🏞️ Delta Lakehouse                    |
-|------------------------|------------------------|----------------------|----------------------------------------|
-| Data Types             | Raw, unstructured, semi-structured | Structured only | All (structured + semi + unstructured) |
-| Storage Cost           | 💲 Low                | 💲💲 High             | 💲 Low                                 |
-| Schema                 | Schema-on-Read        | Schema-on-Write      | Hybrid (flexible + enforced)           |
-| Processing             | Batch & streaming     | Mostly batch         | Batch + streaming                      |
-| Analytics              | Limited (requires ETL)| High (SQL optimized) | High (SQL + ML + BI)                   |
-| Machine Learning       | ✅ Supported           | ❌ Limited           | ✅ Supported                            |
+| Feature | 🪣 Data Lake | 🏛️ Data Warehouse | 🌊 Delta Lake |
+|---------|-------------|-------------------|---------------|
+| **Storage Format** | Raw files (CSV, JSON, Parquet) | Proprietary (columnar, OLAP optimized) | Parquet + Delta Log |
+| **ACID Transactions** | ❌ Not supported | ✅ Supported | ✅ Supported |
+| **Schema Enforcement** | ❌ Weak | ✅ Strong | ✅ Strong (with evolution) |
+| **Performance** | ⚡ Slow (due to raw format) | ⚡ Very Fast (query optimized) | ⚡ Fast (indexing + caching) |
+| **Cost** | 💲 Cheap (object storage like S3, ADLS, GCS) | 💲💲 Expensive (license + infra) | 💲 Balanced (cheap storage + reliability) |
+| **Data Types** | Raw, semi-structured | Structured (tables) | Both structured + semi-structured |
+| **Streaming Support** | ❌ Limited | ❌ Rare | ✅ Yes (unified batch + streaming) |
+| **Time Travel** | ❌ Not possible | ❌ Limited | ✅ Yes (query old versions) |
+| **Metadata Handling** | ❌ Slow with large tables | ✅ Optimized catalog | ✅ Delta Log (scalable metadata) |
+| **Governance** | ❌ Limited | ✅ Strong | ✅ Strong (with Unity Catalog) |
+| **Best Use Case** | Store raw data cheaply | BI, reporting, structured analytics | Lakehouse: Raw + Curated + BI/ML |
 
 ---
 
 ## 🖼️ Data Lakehouse Design
-                    👥 Users & Consumers
 ```
+               👥 Users & Consumers
 
 ──────────────────────────────────────────────────────
 | 📊 BI Analysts | 👨‍💻 Data Engineers | 🤖 Data Scientists |
