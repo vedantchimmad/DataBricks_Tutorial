@@ -2,26 +2,26 @@
 
 ---
 
-## 🔹 What is a Data Lakehouse?
+## 🔹 What is a Delta Lakehouse?
 A **Data Lakehouse** is a modern **data architecture** that combines the best features of both **Data Lakes** and **Data Warehouses**.  
 It is designed to handle **structured, semi-structured, and unstructured data** while enabling **advanced analytics and machine learning**.
 
 - 🏗️ **Data Lake** → Stores massive raw data at low cost (flexible but unstructured).  
 - 🏢 **Data Warehouse** → Provides structured, fast SQL queries and analytics (but expensive & rigid).  
-- 🏞️ **Data Lakehouse** → Combines both → scalable, low-cost storage **+** powerful analytics.  
+- 🏞️ **Delta Lakehouse** → Combines both → scalable, low-cost storage **+** powerful analytics.  
 
 ---
 
 ## ⚖️ Difference Between Data Lake, Data Warehouse & Data Lakehouse
 
-| Feature               | 🏗️ Data Lake           | 🏢 Data Warehouse    | 🏞️ Data Lakehouse        |
-|------------------------|------------------------|----------------------|--------------------------|
+| Feature               | 🏗️ Data Lake           | 🏢 Data Warehouse    | 🏞️ Delta Lakehouse                    |
+|------------------------|------------------------|----------------------|----------------------------------------|
 | Data Types             | Raw, unstructured, semi-structured | Structured only | All (structured + semi + unstructured) |
-| Storage Cost           | 💲 Low                | 💲💲 High             | 💲 Low                   |
-| Schema                 | Schema-on-Read        | Schema-on-Write      | Hybrid (flexible + enforced) |
-| Processing             | Batch & streaming     | Mostly batch         | Batch + streaming        |
-| Analytics              | Limited (requires ETL)| High (SQL optimized) | High (SQL + ML + BI)     |
-| Machine Learning       | ✅ Supported           | ❌ Limited           | ✅ Supported              |
+| Storage Cost           | 💲 Low                | 💲💲 High             | 💲 Low                                 |
+| Schema                 | Schema-on-Read        | Schema-on-Write      | Hybrid (flexible + enforced)           |
+| Processing             | Batch & streaming     | Mostly batch         | Batch + streaming                      |
+| Analytics              | Limited (requires ETL)| High (SQL optimized) | High (SQL + ML + BI)                   |
+| Machine Learning       | ✅ Supported           | ❌ Limited           | ✅ Supported                            |
 
 ---
 
