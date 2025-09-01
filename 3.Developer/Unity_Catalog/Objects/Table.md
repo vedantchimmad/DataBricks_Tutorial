@@ -95,3 +95,115 @@ w.tables.delete(name="customers", catalog_name="finance", schema_name="sales")
 ---
 
 ✅ In short: A **Table** in Unity Catalog is a **structured dataset** that can be **Managed (Databricks controlled)** or **External (user controlled storage)**, supporting powerful Delta features like **ACID, schema evolution, and time travel**.
+
+---
+# 📊 Types of Tables in Unity Catalog (UC)
+
+In **Databricks Unity Catalog**, a **Table** is a governed dataset that can be queried using SQL.  
+UC provides different types of tables depending on how the data is **stored** and **managed**.
+
+---
+
+## 🔹 1. Managed Tables
+- Databricks **manages both the metadata & data files**.
+- Data is stored in a **default location** managed by Unity Catalog.
+- Dropping the table removes **both metadata and data**.
+
+✅ **Use case**: When you want UC to fully control lifecycle of data.  
+
+```sql
+-- Create Managed Table
+CREATE TABLE finance.sales.transactions (
+    id INT,
+    amount DOUBLE,
+    customer STRING
+);
+
+-- UC stores files in default managed storage
+````
+
+---
+
+## 🔹 2. External Tables
+
+* Metadata is in Unity Catalog, but **data is stored externally** (e.g., in ADLS, S3, GCS).
+* Dropping the table **only removes metadata**, not the data files.
+* Useful when data is shared between multiple platforms.
+
+✅ **Use case**: When you already have data in a lake (Parquet, Delta, CSV).
+
+```sql
+-- Create External Table
+CREATE TABLE finance.sales.external_transactions
+USING DELTA
+LOCATION 's3://my-bucket/sales_data/';
+```
+
+---
+
+## 🔹 3. Delta Tables
+
+* Tables backed by the **Delta Lake format** (`.delta`).
+* Support **ACID transactions, time travel, schema evolution**.
+* Can be **Managed** or **External**.
+
+✅ **Use case**: Most common in modern Lakehouse architectures.
+
+```sql
+-- Delta Table example
+CREATE TABLE finance.sales.delta_transactions
+USING DELTA
+AS SELECT * FROM parquet.`/mnt/data/sales/`;
+```
+
+---
+
+## 🔹 4. Temporary Tables
+
+* Session-scoped tables (disappear when session ends).
+* Used for intermediate transformations.
+* Not governed by UC.
+
+✅ **Use case**: Testing, quick exploration.
+
+```sql
+-- Temporary Table
+CREATE TEMPORARY TABLE temp_sales (id INT, amount DOUBLE);
+```
+
+---
+
+## 🔹 5. Views (Virtual Tables)
+
+* Not physical storage → Just a **saved SQL query**.
+* Can be **Managed in UC** like tables.
+* Used for abstraction, simplification, and security.
+
+✅ **Use case**: Share filtered or masked data.
+
+```sql
+-- Create View
+CREATE VIEW finance.sales.sales_summary AS
+SELECT customer, SUM(amount) as total_spent
+FROM finance.sales.transactions
+GROUP BY customer;
+```
+
+---
+
+# 📑 Quick Comparison
+
+| Table Type          | Data Location                 | Lifecycle Control          | UC Governance | Example Use Case                       |
+| ------------------- | ----------------------------- | -------------------------- | ------------- | -------------------------------------- |
+| **Managed Table**   | UC-managed storage            | UC deletes data & metadata | ✅             | Default, full control                  |
+| **External Table**  | External path (S3, ADLS, GCS) | UC deletes only metadata   | ✅             | Data shared across systems             |
+| **Delta Table**     | Managed or External           | Depends                    | ✅             | Time travel, ACID, schema evolution    |
+| **Temporary Table** | In-memory / session storage   | Auto-removed after session | ❌             | Testing, intermediate data             |
+| **View**            | No data (query only)          | Only metadata stored       | ✅             | Abstractions, security, simplification |
+
+---
+
+## 🎯 Example Sentence
+
+* **"The `finance.sales.transactions` table is a managed Delta table, while `finance.sales.external_transactions` points to raw Parquet files in S3 as an external table."**
+
