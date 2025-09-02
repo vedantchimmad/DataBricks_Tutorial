@@ -126,4 +126,117 @@ agg_df = df.groupBy("product_id").count()
 
 🔥 **In short:**
 **Autoloader Streaming = Real-time, fault-tolerant, scalable ingestion pipeline for cloud data → Delta Lake.**
+---
+## ⏱️ Trigger Interval in Autoloader Streaming (Databricks)
+
+In **Structured Streaming with Autoloader**, the **trigger interval** controls **how often Spark checks for new data** and processes it.  
+It’s defined using `.trigger()` in the write stream.
+
+---
+
+## ⚙️ Types of Triggers
+
+### 1️⃣ **Default (Micro-batch Mode)**
+If no trigger is set, Spark processes **new files as soon as they arrive**.
+```python
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "/mnt/checkpoints/sales")
+   .table("bronze_sales"))
+````
+
+👉 Processes continuously (every micro-batch).
+
+---
+
+### 2️⃣ **Fixed Interval Trigger**
+
+Run the stream at **regular intervals** (e.g., every 1 minute).
+
+```python
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "/mnt/checkpoints/sales")
+   .trigger(processingTime="1 minute")
+   .table("bronze_sales"))
+```
+
+🔹 Spark will check the source every **1 min** for new files.
+
+---
+
+### 3️⃣ **Once Trigger**
+
+Runs the query **only once**, processing all available data, then stops.
+
+```python
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "/mnt/checkpoints/sales")
+   .trigger(once=True)
+   .table("bronze_sales"))
+```
+
+👉 Useful for **batch-like runs** with streaming syntax.
+
+---
+
+### 4️⃣ **Available-Now Trigger** (Near-Batch Mode)
+
+Processes **all available data immediately** and then stops (similar to once, but optimized).
+
+```python
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "/mnt/checkpoints/sales")
+   .trigger(availableNow=True)
+   .table("bronze_sales"))
+```
+
+🔹 Often used for **catch-up ingestion** (historical data load).
+
+---
+
+## 📊 When to Use Which?
+
+| Trigger Type              | Use Case                                                                |
+| ------------------------- | ----------------------------------------------------------------------- |
+| **Default (micro-batch)** | Real-time streaming (low latency).                                      |
+| **Fixed interval**        | When you want predictable **scheduled ingestion** (e.g., every 5 mins). |
+| **Once**                  | For batch jobs that process data **only once** and exit.                |
+| **AvailableNow**          | Best for backfilling historical data without running continuously.      |
+
+---
+
+## 🛠️ Example: Streaming with Trigger Interval
+
+```python
+df = (spark.readStream
+      .format("cloudFiles")
+      .option("cloudFiles.format", "json")
+      .option("cloudFiles.schemaLocation", "/mnt/checkpoints/schema")
+      .load("/mnt/raw/transactions"))
+
+# Write with trigger every 2 minutes
+(df.writeStream
+   .format("delta")
+   .option("checkpointLocation", "/mnt/checkpoints/transactions")
+   .trigger(processingTime="2 minutes")
+   .table("bronze_transactions"))
+```
+
+👉 This stream **checks for new files every 2 minutes**.
+
+---
+
+✅ **Summary**
+
+* `trigger(processingTime="X minutes")` → Schedules micro-batches.
+* `trigger(once=True)` → Single batch & stop.
+* `trigger(availableNow=True)` → Ingest all available data & stop.
+
+---
+
+🔥 Pro Tip: For **low-latency pipelines** (IoT, logs), use **micro-batch (default)**.
+For **cost-efficient ingestion** of large files, use **fixed intervals or availableNow**.
 
