@@ -103,3 +103,125 @@ w.views.delete(name="sales_summary", catalog_name="finance", schema_name="sales"
 ---
 
 ✅ In short: A **View** is a **virtual table** defined by a SQL query that makes data consumption easier, reusable, and more secure without duplicating storage.
+
+---
+# 👓 Different Types of Views in Databricks (Unity Catalog & Delta Lake)
+
+Views in Databricks are **virtual tables** that do not store data themselves but represent results of queries.  
+They simplify query logic, improve security, and support modular data pipelines.  
+
+---
+
+## 1️⃣ **Standard (Logical) Views**
+- **Definition:** A simple SQL query saved as a named object.
+- **Storage:** No physical data, just metadata + query logic.
+- **Use Case:** Simplify repeated queries or join logic.
+- **Example:**
+```sql
+-- Create a simple logical view
+CREATE VIEW sales_summary AS
+SELECT region, SUM(amount) AS total_sales
+FROM sales_data
+GROUP BY region;
+
+-- Query the view
+SELECT * FROM sales_summary;
+````
+
+---
+
+## 2️⃣ **Global Views**
+
+* **Definition:** Views that are accessible across all sessions and clusters (but limited to the same metastore).
+* **Created under:** `global_temp` schema.
+* **Use Case:** When multiple notebooks or jobs need to share the same view.
+* **Example:**
+
+```sql
+-- Create a global view
+CREATE GLOBAL TEMP VIEW global_sales_summary AS
+SELECT region, COUNT(*) AS orders
+FROM sales_data
+GROUP BY region;
+
+-- Query the global view
+SELECT * FROM global_temp.global_sales_summary;
+```
+
+---
+
+## 3️⃣ **Temporary Views**
+
+* **Definition:** Session-scoped views that disappear when the session ends.
+* **Storage:** Only in memory (not stored in metastore).
+* **Use Case:** Useful for quick transformations or debugging.
+* **Example:**
+
+```sql
+-- Create a temporary view
+CREATE OR REPLACE TEMP VIEW temp_sales AS
+SELECT * FROM sales_data WHERE year = 2025;
+
+-- Query temporary view
+SELECT COUNT(*) FROM temp_sales;
+```
+
+---
+
+## 4️⃣ **Materialized Views (Managed Tables in Delta Lake)**
+
+* **Definition:** Pre-computed, stored results of a query (like a table but auto-refreshed).
+* **Performance:** Faster for repeated queries, BI dashboards.
+* **Use Case:** Reporting, aggregation-heavy queries.
+* **Example:**
+
+```sql
+-- Create a materialized view
+CREATE MATERIALIZED VIEW monthly_sales_summary
+AS
+SELECT year, month, SUM(amount) AS total_sales
+FROM sales_data
+GROUP BY year, month;
+```
+
+⚡ Databricks automatically **refreshes** the materialized view when the underlying data changes.
+
+---
+
+## 5️⃣ **Secure Views (Unity Catalog)**
+
+* **Definition:** Views with **row-level or column-level security** applied.
+* **Use Case:** Hide sensitive data or enforce data governance policies.
+* **Example:**
+
+```sql
+-- Secure view that hides customer emails
+CREATE VIEW secure_customer_view
+AS
+SELECT customer_id, region
+FROM customers;
+```
+
+Admins can grant permissions on the secure view without exposing sensitive columns.
+
+---
+
+# 📊 Summary of View Types
+
+| View Type             | Scope / Storage                       | Use Case                                |
+| --------------------- | ------------------------------------- | --------------------------------------- |
+| **Standard View**     | SQL metadata, persisted               | Simplify query logic                    |
+| **Global View**       | Shared across clusters (global\_temp) | Multi-notebook access                   |
+| **Temporary View**    | Session-only (in memory)              | Debugging, quick analysis               |
+| **Materialized View** | Stored results, auto-refreshed        | BI dashboards, performance optimization |
+| **Secure View**       | Governed view with security           | Compliance, access control              |
+
+---
+
+💡 **Tip:**
+
+* Use **Temporary Views** for short-lived exploration.
+* Use **Materialized Views** for **performance-heavy analytics**.
+* Use **Secure Views** with **Unity Catalog** for compliance and governance.
+
+
