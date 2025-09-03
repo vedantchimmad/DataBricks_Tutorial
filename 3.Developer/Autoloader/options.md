@@ -72,8 +72,38 @@ Below is a detailed explanation of every available option with examples.
 | `cloudFiles.maxBytesPerTrigger` | Cap total size processed per batch. | `"500m"` | Useful when files vary in size. |
 
 ---
+## 🔹 7. CSV/TSV Reader Options
+| Option                      | Description                                   | Example                                                                           |     |
+| --------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------- | --- |
+| `header`                    | Treat first line as header row.               | `"true"`                                                                          |     |
+| `delimiter` / `sep`         | Column separator. Default = `,`.              | `","`, `"\t"`, \`"                                                                | "\` |
+| `quote`                     | Quote character for strings. Default = `"`    | `"\""`                                                                            |     |
+| `escape`                    | Escape character.                             | `"\\"`                                                                            |     |
+| `comment`                   | Character to mark comments.                   | `"#"`                                                                             |     |
+| `multiLine`                 | Parse multi-line records.                     | `"true"`                                                                          |     |
+| `ignoreLeadingWhiteSpace`   | Trim leading spaces.                          | `"true"`                                                                          |     |
+| `ignoreTrailingWhiteSpace`  | Trim trailing spaces.                         | `"true"`                                                                          |     |
+| `enforceSchema`             | Enforce provided schema.                      | `"true"`                                                                          |     |
+| `mode`                      | How to handle corrupt rows.                   | `"PERMISSIVE"` (default), `"DROPMALFORMED"`, `"FAILFAST"`                         |     |
+| `columnNameOfCorruptRecord` | Column to capture bad records.                | `"_corrupt_record"`                                                               |     |
+| `samplingRatio`             | Fraction of data used for schema inference.   | `"0.1"`                                                                           |     |
+| `nullValue`                 | Representation of `null` values.              | `"NA"`                                                                            |     |
+| `nanValue`                  | Representation of `NaN`.                      | `"NaN"`                                                                           |     |
+| `positiveInf`               | Representation of +∞.                         | `"Inf"`, `"Infinity"`                                                             |     |
+| `negativeInf`               | Representation of -∞.                         | `"-Inf"`                                                                          |     |
+| `dateFormat`                | Date parsing pattern.                         | `"yyyy-MM-dd"`                                                                    |     |
+| `timestampFormat`           | Timestamp parsing pattern.                    | `"yyyy-MM-dd'T'HH:mm:ss"`                                                         |     |
+| `locale`                    | Locale for parsing numbers/dates.             | `"en-US"`                                                                         |     |
+| `charset`                   | File encoding (default UTF-8).                | `"UTF-16"`                                                                        |     |
+| `emptyValue`                | Value to use for empty strings.               | `""`                                                                              |     |
+| `ignoreEmptyLines`          | Skip empty lines.                             | `"true"`                                                                          |     |
+| `skipRows`                  | Number of lines to skip at the start of file. | `"2"`                                                                             |     |
+| `maxColumns`                | Maximum number of columns allowed.            | `"20480"`                                                                         |     |
+| `maxCharsPerColumn`         | Maximum characters per column.                | `"1000000"`                                                                       |     |
+| `unescapedQuoteHandling`    | How to handle unescaped quotes.               | `"STOP_AT_CLOSING_QUOTE"`, `"BACK_TO_DELIMITER"`, `"SKIP_VALUE"`, `"RAISE_ERROR"` |     |
+---
 
-## 🔹 7. Example Configurations
+## 🔹 Example Configurations
 
 ### ✅ JSON ingestion with schema evolution
 ```python
@@ -84,7 +114,6 @@ df = (spark.readStream.format("cloudFiles")
       .option("cloudFiles.schemaEvolutionMode", "addNewColumns")
       .load("/mnt/raw/events"))
 ````
-
 ### ✅ CSV ingestion with notifications and limits
 
 ```python
