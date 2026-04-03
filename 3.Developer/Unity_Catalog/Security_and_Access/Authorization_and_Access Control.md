@@ -55,7 +55,7 @@ Unity Catalog enforces security at **multiple levels**:
 - Restricts data **rows** visible to users.
 - Implemented with **dynamic views**.
 
-```sql
+```roomsql
 -- Example: Restrict sales data to user's region
 CREATE OR REPLACE VIEW regional_sales AS
 SELECT * FROM sales
@@ -69,7 +69,7 @@ WHERE region = current_user_region();
 * Restricts access to **sensitive columns**.
 * Common use cases: PII (emails, phone numbers), salary data.
 
-```sql
+```roomsql
 -- Example: Mask sensitive column
 CREATE OR REPLACE VIEW masked_sales AS
 SELECT customer_id, 
