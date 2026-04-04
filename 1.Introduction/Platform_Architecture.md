@@ -1,6 +1,6 @@
-# Azure Databricks Platform Architecture
+# Databricks Platform Architecture
 
-Azure Databricks integrates with Azure services to provide a **unified analytics platform** for big data and AI.  
+Databricks integrates with cloud services to provide a **unified analytics platform** for big data and AI.  
 The platform architecture is divided into two main planes: **Control Plane** and **Compute Plane**.
 
 ---
