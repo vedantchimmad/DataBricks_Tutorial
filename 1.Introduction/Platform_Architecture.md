@@ -5,52 +5,78 @@ The platform architecture is divided into two main planes: **Control Plane** and
 
 ---
 
-## 🔹 High-Level Architecture
+## 🔹 High-Level Architecture (Databricks - Detailed)
 
 ```text
-+---------------------------------------------------------------+
-|                Customer's Databricks Account                  |
-+---------------------------------------------------------------+
-         | (Web UI, REST API, SSO with Azure AD)
-         ▼
-+---------------------------------------------------------------+
-|           Azure Databricks Control Plane (Managed)            |
-|  - Databricks Web Application                                 |
-|  - Notebooks                                                  |
-|  - Jobs and Queries                                           |
-|  - Cluster Management                                         |
-+---------------------------------------------------------------+
-         | Upload files / Push & Pull metadata, logs, results
-         ▼
-+---------------------------------------------------------------+
-|        Classic Compute Plane (Customer's VNet)                |
-|  Compute resources for clusters & SQL warehouses              |
-|                                                               |
-|   - DBFS (FileStore, libraries)                               |
-|   - Spark logs                                                |
-|   - Job results                                               |
-|   - Workspace root storage (ADLS Gen2 or Blob Storage)        |
-+---------------------------------------------------------------+
-         | Direct Access or DBFS mount
-         ▼
-+---------------------------------------------------------------+
-|   Customer Data in ADLS Gen2 or Blob Storage                  |
-+---------------------------------------------------------------+
-         | External data connectors
-         ▼
-+---------------------------------------------------------------+
-|   External Data Sources                                       |
-+---------------------------------------------------------------+
-````
-
++-----------------------------------------------------------------------+
+|                👨‍💻 Users / Clients                                   |
+|  - Web UI (Notebooks, SQL Editor)                                     |
+|  - REST APIs                                                          |
+|  - BI Tools (Power BI, Tableau)                                       |
+|  - CLI / SDK                                                          |
++-----------------------------------------------------------------------+
+            | Authentication (SSO, IAM, Tokens)
+            ▼
++-----------------------------------------------------------------------+
+|        🟣 Databricks Control Plane (Managed by Databricks)            |
+|  - Workspace UI                                                       |
+|  - Notebooks & Repos                                                  |
+|  - Jobs & Workflows                                                   |
+|  - Cluster Management                                                 |
+|  - Unity Catalog (Governance Layer)                                   |
+|  - Access Control & Authentication                                    |
++-----------------------------------------------------------------------+
+            | Sends execution requests, metadata, configs
+            ▼
++-----------------------------------------------------------------------+
+|        🔵 Compute Plane (Customer Cloud - VNet/VPC)                   |
+|                                                                       |
+|   ⚙️ Clusters / SQL Warehouses                                        |
+|   - Driver Node (Execution Coordinator)                               |
+|   - Worker Nodes (Parallel Processing)                                |
+|                                                                       |
+|   📦 Execution Components                                             |
+|   - Spark Executors                                                   |
+|   - Task Execution                                                    |
+|   - Shuffle & Caching                                                 |
+|                                                                       |
+|   📂 Intermediate Storage                                             |
+|   - DBFS (Databricks File System)                                     |
+|   - Logs (Driver / Executor logs)                                     |
+|   - Temp data / Shuffle data                                          |
++-----------------------------------------------------------------------+
+            | Read / Write Data (Secure Access)
+            ▼
++-----------------------------------------------------------------------+
+|        🟢 Storage Layer (Customer Managed Data Lake)                  |
+|                                                                       |
+|   - Delta Lake Tables                                                 |
+|   - Parquet / CSV / JSON Files                                        |
+|   - Managed & External Tables                                         |
+|                                                                       |
+|   📌 Storage Options                                                  |
+|   - Azure Data Lake Storage (ADLS Gen2)                               |
+|   - AWS S3                                                            |
+|   - Google Cloud Storage                                              |
++-----------------------------------------------------------------------+
+            | External Connectors / Federation
+            ▼
++-----------------------------------------------------------------------+
+|        🌐 External Data Sources                                       |
+|                                                                       |
+|   - RDBMS (PostgreSQL, MySQL, SQL Server)                             |
+|   - Data Warehouses (Snowflake, Redshift)                             |
+|   - Streaming Sources (Kafka, Event Hub)                              |
++-----------------------------------------------------------------------+
+```
 ---
 
 ## 🔹 Key Components
 
 | Component                         | Description                                                                                                               |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Control Plane**                 | Managed by Azure Databricks. Hosts the web app, notebooks, job scheduling, and cluster manager.                           |
-| **Compute Plane**                 | Runs inside the customer’s Azure subscription (VNet). Hosts clusters, SQL warehouses, and handles actual data processing. |
+| --------------------------------- |---------------------------------------------------------------------------------------------------------------------------|
+| **Control Plane**                 | Managed by Databricks. Hosts the web app, notebooks, job scheduling, and cluster manager.                                 |
+| **Compute Plane**                 | Runs inside the customer’s Cloud subscription (VNet). Hosts clusters, SQL warehouses, and handles actual data processing. |
 | **DBFS (Databricks File System)** | A distributed file system in the compute plane for storing notebooks, libraries, and logs.                                |
 | **Customer Data Storage**         | Azure Data Lake Storage Gen2 (ADLS) or Azure Blob Storage for customer-managed data.                                      |
 | **Workspace Root Storage**        | Stores system data, libraries, and root DBFS.                                                                             |
